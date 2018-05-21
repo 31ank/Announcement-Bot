@@ -7,14 +7,14 @@ from yaml import load, dump
 import yaml
 
 bot = commands.Bot(description="Announcement Bot", command_prefix="!", pm_help = True) #you can change here the prefix
-game = discord.Game("<help for help")  #change here the game
+game = discord.Game("")  #change here the game
 
-with open("config.yaml") as file: #load token from config file
+with open("config.yaml") as file: #load token and username from config file
         data = load(file)
         token = data["token"]
         user = data["user"]
 
-with open("channels.yaml", encoding='utf-8') as file: #load other channels
+with open("channels.yaml", encoding='utf-8') as file: #load all channels
         data = load(file)
         channels = data["channels"]
 
@@ -30,7 +30,7 @@ async def ping(ctx):
         await ctx.send(':ping_pong: Pong! ~' + str(round(bot.latency * 1000, 2)) + " ms")
 
 @bot.command(brief='ann [message]')
-async def ann(ctx, message : str): #unload extension
+async def ann(ctx, message : str): #announcement command
         print(str(message))
         if(str(ctx.message.author) == user): #compare usernames
                 await ctx.send('user auth ok')
@@ -50,7 +50,7 @@ async def ann(ctx, message : str): #unload extension
 async def addtolist(ctx):
         if ctx.message.author.guild_permissions.administrator: #does user have admin rights?
                 ad_ch = ctx.message.channel.id #get channel id
-                
+
                 with open("channels.yaml", encoding='utf-8') as file: #load all channels in list
                         datachan = load(file)
                 if ad_ch in datachan["channels"]: #channel already in update list
@@ -71,7 +71,7 @@ async def removefromlist(ctx):
         if ctx.message.author.guild_permissions.administrator: #does user have admin rights?
 
                 re_ch = ctx.message.channel.id #get channel id
-                
+
                 with open("channels.yaml", encoding='utf-8') as file: #load other channels
                         datachan = load(file)
                 try:
@@ -80,7 +80,7 @@ async def removefromlist(ctx):
 
                         with open('channels.yaml', 'w') as writer: #save new file
                                 yaml.dump(datachan, writer)
-                
+
                         await ctx.send('Removed channel')
                 except:
                         await ctx.send('An error occured :|')
